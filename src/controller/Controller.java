@@ -20,10 +20,14 @@ public class Controller implements ActionListener, MouseListener{
 	
 	public Controller() {
 		this.conn = new PostgresConnection();
-		Club.getInstance().setTipos(conn.getTipos());
-		Club.getInstance().setGrupos(conn.getGruposFamiliares());
-		this.view = new VClub();
-		this.view.addActionListener(this);
+		try {
+			Club.getInstance().setTipos(conn.getTipos());
+			Club.getInstance().setGrupos(conn.getGruposFamiliares());
+			this.view = new VClub();
+			this.view.addActionListener(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -63,25 +67,56 @@ public class Controller implements ActionListener, MouseListener{
 	}
 	
 	public void pagarCuota(int nro_grupo, int nro_cuota) {
-		Club.getInstance().getGrupo(nro_grupo).pagarCuota(nro_cuota);
-		// TODO: Pagar la cuota en base de datos.
+		try {
+			conn.pagarCuota(nro_grupo, nro_cuota);
+			Club.getInstance().getGrupo(nro_grupo).pagarCuota(nro_cuota);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void addGrupo() {
-		int nro_grupo = Club.getInstance().getGrupos().get(Club.getInstance().getGrupos().size() - 1).getNro_Grupo() + 1;
-		Socio titular = createSocio(nro_grupo, 1);
-		GrupoFamiliar gf = new GrupoFamiliar(nro_grupo, titular);
-		gf.addSocio(titular);
-		Club.getInstance().addGrupo(gf);
-		// TODO: Agregar el grupo en base de datos.
+		try {
+			int nro_grupo = Club.getInstance().getGrupos().get(Club.getInstance().getGrupos().size() - 1).getNro_Grupo() + 1;
+			Socio titular = createSocio(nro_grupo, 1);
+			GrupoFamiliar gf = new GrupoFamiliar(nro_grupo, titular);
+			gf.addSocio(titular);
+			
+			conn.addGrupo(titular.getNombre(),
+					titular.getApellido(),
+					titular.getEmail(),
+					titular.getF_nac(),
+					titular.getDomicilio(),
+					String.valueOf(titular.getTipo().getTipo().charAt(0)),
+					titular.getCelular(),
+					titular.getTelefono());
+			
+			
+			Club.getInstance().addGrupo(gf);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void addSocio(int nro_grupo) {
-		GrupoFamiliar gf = Club.getInstance().getGrupo(nro_grupo);
-		int nro_socio = gf.getSocios().get(gf.getSocios().size() - 1).getNro_Socio() + 1;
-		Socio socio = createSocio(nro_grupo, nro_socio);
-		gf.addSocio(socio);
-		// TODO: Agregar el socio al grupo en base de datos.
+		try {
+			GrupoFamiliar gf = Club.getInstance().getGrupo(nro_grupo);
+			int nro_socio = gf.getSocios().get(gf.getSocios().size() - 1).getNro_Socio() + 1;
+			Socio s = createSocio(nro_grupo, nro_socio);
+			conn.addSocio(nro_grupo, 
+					nro_socio,
+					s.getNombre(),
+					s.getApellido(),
+					s.getEmail(),
+					s.getF_nac(),
+					s.getDomicilio(),
+					String.valueOf(s.getTipo().getTipo().charAt(0)),
+					s.getCelular(),
+					s.getTelefono());
+			gf.addSocio(s);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private Socio createSocio(int nro_grupo, int nro_socio) {
@@ -100,34 +135,36 @@ public class Controller implements ActionListener, MouseListener{
 	}
 	
 	private void actualizarSocio(int nro_grupo, int nro_socio) {
-		Iterator<GrupoFamiliar> itg = Club.getInstance().getGrupos().iterator();
-		GrupoFamiliar gf = null;
-		
-		while(itg.hasNext()) {
-			gf = (GrupoFamiliar) itg.next();
-			if(gf.getNro_Grupo() == nro_grupo) {
-				Iterator<Socio> its = gf.getSocios().iterator();
-				
-				while(its.hasNext()) {
-					Socio s = (Socio) its.next();
-					if(s.getNro_Socio() == nro_socio) {						
-						s.updateSocio(
-								viewSocio.getNombre(), 
-								viewSocio.getApellido(), 
-								viewSocio.getEmail(), 
-								viewSocio.getFNac(), 
-								viewSocio.getDomicilio(), 
-								Club.getInstance().getTipos().get(String.valueOf(viewSocio.getTipo().charAt(0))), 
-								viewSocio.getTelefono(),
-								viewSocio.getCelular()
-								);
-						break;
+		try {
+			Iterator<GrupoFamiliar> itg = Club.getInstance().getGrupos().iterator();
+			GrupoFamiliar gf = null;
+			Socio s = null;
+			
+			while(itg.hasNext()) {
+				gf = (GrupoFamiliar) itg.next();
+				if(gf.getNro_Grupo() == nro_grupo) {
+					Iterator<Socio> its = gf.getSocios().iterator();
+					
+					while(its.hasNext()) {
+						s = (Socio) its.next();
+						if(s.getNro_Socio() == nro_socio) {						
+							break;
+						}
 					}
 				}
 			}
-		}
-		if(gf.getTitular().getNro_Socio() == nro_socio) {
-			gf.getTitular().updateSocio(
+			conn.updateSocio(nro_grupo, 
+					nro_socio, 
+					viewSocio.getNombre(),
+					viewSocio.getApellido(),
+					viewSocio.getEmail(),
+					viewSocio.getFNac(),
+					viewSocio.getDomicilio(),
+					String.valueOf(viewSocio.getTipo().charAt(0)),
+					viewSocio.getCelular(),
+					viewSocio.getTelefono());
+			
+			s.updateSocio(
 					viewSocio.getNombre(), 
 					viewSocio.getApellido(), 
 					viewSocio.getEmail(), 
@@ -137,11 +174,24 @@ public class Controller implements ActionListener, MouseListener{
 					viewSocio.getTelefono(),
 					viewSocio.getCelular()
 					);
-			view.refreshGrupos();
+			
+			if(gf.getTitular().getNro_Socio() == nro_socio) {
+				gf.getTitular().updateSocio(
+						viewSocio.getNombre(), 
+						viewSocio.getApellido(), 
+						viewSocio.getEmail(), 
+						viewSocio.getFNac(), 
+						viewSocio.getDomicilio(), 
+						Club.getInstance().getTipos().get(String.valueOf(viewSocio.getTipo().charAt(0))), 
+						viewSocio.getTelefono(),
+						viewSocio.getCelular()
+						);
+				view.refreshGrupos();
+			}
+			view.refreshInfo(gf);
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
-		// TODO: Meter un UPDATE en BD.
-		// conn.updateSocio(nro_grupo, nro_socio, datos);
-		view.refreshInfo(gf);
 	}
 
 	@Override
