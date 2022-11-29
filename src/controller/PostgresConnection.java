@@ -18,8 +18,8 @@ import model.Categoria;
 
 public class PostgresConnection implements IConnection {
 	public static final String URL = "jdbc:postgresql://localhost/club-deportivo";
-	public static final String USERNAME = "libertya";
-	public static final String PASSWORD = "libertya";
+	public static final String USERNAME = "postgres";
+	public static final String PASSWORD = "1234";
 	private static Connection conn = null;
 	
 	public Connection connect() {
@@ -187,16 +187,17 @@ public class PostgresConnection implements IConnection {
 			String domicilio, String tipo, String celular, String telefono) throws Exception {
 		Connection conn = connect();
 		String sql = "CALL create_grupo("
-				+ nombre + ", "
-				+ apellido + ", "
-				+ email + ", "
-				+ f_nac + ", "
-				+ domicilio + ", "
-				+ tipo + ", "
-				+ celular + ", "
-				+ telefono + ")";
+				+ "'" + nombre + "', "
+				+ "'" + apellido + "', "
+				+ "'" + email + "', "
+				+ "'" + f_nac + "', "
+				+ "'" + domicilio + "', "
+				+ "'" + tipo + "', "
+				+ "'" + celular + "', "
+				+ "'" + telefono + "')";
+		System.out.println(sql);
 		PreparedStatement ps = conn.prepareStatement(sql);
-		ps.executeQuery();
+		ps.executeUpdate();
 	}
 	
 	public void pagarCuota(int nro_grupo, int nro_cuota) throws Exception {
