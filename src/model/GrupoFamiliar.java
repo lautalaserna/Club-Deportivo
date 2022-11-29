@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -10,11 +11,13 @@ public class GrupoFamiliar {
 	private ArrayList<CuotaFamiliar> cuotas;
 	
 	public GrupoFamiliar() {
-		
+		this.socios = new ArrayList<Socio>();
+		this.cuotas = new ArrayList<CuotaFamiliar>();
 	}
 	
 	public GrupoFamiliar(int nro_grupo, Socio titular) {
 		this.socios = new ArrayList<Socio>();
+		this.cuotas = new ArrayList<CuotaFamiliar>();
 		this.nro_grupo = nro_grupo;
 		this.titular = titular;
 	}
@@ -30,6 +33,10 @@ public class GrupoFamiliar {
 	
 	public int getNro_Grupo() {
 		return this.nro_grupo;
+	}
+	
+	public void setNro_Grupo(int nro_grupo) {
+		this.nro_grupo = nro_grupo;
 	}
 	
 	public ArrayList<Socio> getSocios(){
@@ -62,5 +69,16 @@ public class GrupoFamiliar {
 			}
 		}
 		return deuda;
+	}
+	
+	public void pagarCuota(int nro_cuota) {
+		Iterator<CuotaFamiliar> it = this.cuotas.iterator();
+		while(it.hasNext()) {
+			CuotaFamiliar cf = it.next();
+			if(cf.getNro_cuota() == nro_cuota && cf.getFechaPago() == null) {
+				LocalDate today = LocalDate.now();
+				cf.setFechaPago(today.toString());
+			}
+		}
 	}
 }

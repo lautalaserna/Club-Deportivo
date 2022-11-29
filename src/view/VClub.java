@@ -35,6 +35,7 @@ public class VClub extends JFrame implements MouseListener{
 	private DefaultListModel<CuotaFamiliar> modelCuotas;
 	private JButton btnAgregarGrupo;
 	private JButton btnAgregarSocio;
+	private JButton btnPagar;
 	private JLabel lblNewLabel;
 	private JLabel lblTitular;
 	private JLabel lblNewLabel_1;
@@ -102,7 +103,7 @@ public class VClub extends JFrame implements MouseListener{
 		modelGrupos = new DefaultListModel<GrupoFamiliar>();
 		listGrupos.setModel(modelGrupos);
 		
-		btnAgregarGrupo = new JButton("Agregar Grupo");
+		btnAgregarGrupo = new JButton("Nuevo Grupo");
 		btnAgregarGrupo.setBounds(189, 523, 140, 32);
 		panelGruposFamiliares.add(btnAgregarGrupo);
 		btnAgregarGrupo.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 14));
@@ -118,7 +119,7 @@ public class VClub extends JFrame implements MouseListener{
 		modelSocios = new DefaultListModel<Socio>();
 		listSocios.setModel(modelSocios);
 		
-		btnAgregarSocio = new JButton("Agregar Socio");
+		btnAgregarSocio = new JButton("Nuevo Socio");
 		btnAgregarSocio.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 14));
 		btnAgregarSocio.setBounds(347, 206, 140, 32);
 		panelSocios.add(btnAgregarSocio);
@@ -145,7 +146,7 @@ public class VClub extends JFrame implements MouseListener{
 		contentPane.add(panelCuotas);
 		
 		JPanel panelList3 = new JPanel();
-		panelList3.setBounds(20, 29, 229, 266);
+		panelList3.setBounds(20, 29, 229, 269);
 		panelCuotas.add(panelList3);
 		panelList3.setLayout(new BorderLayout(0, 0));
 		
@@ -158,9 +159,9 @@ public class VClub extends JFrame implements MouseListener{
 		modelCuotas = new DefaultListModel<CuotaFamiliar>();
 		listCuotas.setModel(modelCuotas);
 		
-		JButton btnPagar = new JButton("Pagar Cuota");
+		btnPagar = new JButton("Pagar Cuota");
 		btnPagar.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 14));
-		btnPagar.setBounds(310, 225, 140, 70);
+		btnPagar.setBounds(310, 225, 140, 73);
 		panelCuotas.add(btnPagar);
 		
 		JLabel lblNewLabel_2 = new JLabel("Deuda TOTAL:");
@@ -180,6 +181,7 @@ public class VClub extends JFrame implements MouseListener{
 	public void addActionListener(Controller c) {
 		this.btnAgregarGrupo.addActionListener(c);
 		this.btnAgregarSocio.addActionListener(c);
+		this.btnPagar.addActionListener(c);
 		this.listSocios.addMouseListener(c);
 	}
 	
@@ -249,5 +251,13 @@ public class VClub extends JFrame implements MouseListener{
 	
 	public JList getListSocios() {
 		return this.listSocios;
+	}
+	
+	public JList getListGrupos() {
+		return this.listGrupos;
+	}
+	
+	public JList getListCoutas() {
+		return this.listCuotas;
 	}
 }

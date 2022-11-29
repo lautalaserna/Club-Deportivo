@@ -149,9 +149,9 @@ public class PostgresConnection implements IConnection {
 					name = "Vitalicio";
 				}
 				
-				Categoria t = new Categoria(name, porcentaje);
+				Categoria c = new Categoria(name, porcentaje);
 				
-				tipos.put(tipo, t);
+				tipos.put(tipo, c);
 			}
 		}
 		catch (Exception e) {
