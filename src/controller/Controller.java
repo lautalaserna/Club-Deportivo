@@ -79,6 +79,9 @@ public class Controller implements ActionListener, MouseListener{
 		try {
 			int nro_grupo = Club.getInstance().getGrupos().get(Club.getInstance().getGrupos().size() - 1).getNro_Grupo() + 1;
 			Socio titular = createSocio(nro_grupo, 1);
+			if (titular.getTipo().getTipo().equals("Infantil")) {
+				throw new Exception("El titular no puede ser de tipo infantil.");
+			}
 			GrupoFamiliar gf = new GrupoFamiliar(nro_grupo, titular);
 			gf.addSocio(titular);
 			
@@ -153,6 +156,11 @@ public class Controller implements ActionListener, MouseListener{
 					}
 				}
 			}
+			
+			if (gf.getTitular().getNro_Socio() == nro_socio && viewSocio.getTipo().charAt(0) == 'I') {
+				throw new Exception("El titular no puede ser de tipo Infantil.");
+			}
+			
 			conn.updateSocio(nro_grupo, 
 					nro_socio, 
 					viewSocio.getNombre(),
